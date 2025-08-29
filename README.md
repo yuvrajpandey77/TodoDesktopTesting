@@ -1,6 +1,11 @@
-## Desktop (Electron) + Vite React TypeScript
+## Sakura Todo — Desktop (Electron) + Vite React TypeScript
 
-This project is a Vite + React + TypeScript web app extended to run as a desktop app via Electron. The Electron runtime loads the Vite dev server in development and the built static files in production.
+Sakura Todo is a React + TypeScript app packaged as a cross‑platform desktop app using Electron. Electron embeds Chromium + Node.js to render your web UI and access desktop capabilities (windowing, file system, menus, tray, shortcuts). In development we load the Vite dev server; in production we load the built static files.
+
+### Why Electron?
+- One codebase, desktop everywhere: ship Windows (.exe), macOS (.dmg/.zip), Linux (.AppImage)
+- Web UI + native powers: modern React UI plus OS integrations (menus, shortcuts, file system)
+- Fast DX: Vite dev server + hot reload; same UI code runs on web and desktop
 
 ### What we added
 - `electron/main.ts`: Electron main process
@@ -30,7 +35,7 @@ This project is a Vite + React + TypeScript web app extended to run as a desktop
   - Custom TitleBar is rendered by React; window is frameless
 - Production
   - `vite build` emits static files in `dist/`
-  - Electron main (`electron/dist/main.js`) loads `dist/index.html`
+  - Electron main loads `app.getAppPath()/dist/index.html` (packaged‑safe)
   - `electron-builder` packages the app per OS
 
 ### Window controls and behaviors
@@ -54,7 +59,7 @@ This project is a Vite + React + TypeScript web app extended to run as a desktop
 - `npm run dev:web` — Vite dev server only
 - `npm run dev:electron` — Electron watcher + launcher (waits for Vite & `electron/dist`)
 - `npm run build` — builds Vite and compiles Electron once
-- `npm run dist` — packages the app with `electron-builder`
+- `npm run dist` — generates icons and packages the app with `electron-builder`
 - `npm run start:electron` — launch Electron from compiled output (after `build`)
 
 ### File structure (added/changed files)
@@ -95,7 +100,20 @@ npm run build
 ```bash
 npm run dist
 ```
-Outputs are in `dist/` (web assets) and installer artifacts under `dist/` (e.g., `.AppImage`, `.exe`, `.dmg` depending on platform).
+Outputs are in `dist/` (web assets) and installer artifacts under `dist/` (e.g., `.AppImage`, `.exe`, `.dmg` depending on platform). On a local machine you only get the current OS installer. Use CI to build all OS installers at once.
+
+### App Icons
+- Place source icons in `public/icons/`:
+  - `favicon.ico` (source; optional)
+  - `256x256.png`, `512x512.png` (Linux packaging reads PNGs with size in filename)
+- The build step auto‑generates missing PNGs from `favicon.ico` when possible, or writes a safe placeholder so packaging never fails.
+- Electron window icon resolves to:
+  - Dev: `/icons/icon.png` in `public/` (if present)
+  - Prod: `<resources>/icons/icon.png` (copied via `extraResources`)
+- electron-builder icons:
+  - mac: `public/icons/icon.icns`
+  - win: `public/icons/icon.ico`
+  - linux: `public/icons` (directory containing `NNxNN.png`)
 
 ### Security
 - `contextIsolation: true`, `nodeIntegration: false`, `sandbox: true`
@@ -131,6 +149,10 @@ export LIBGL_ALWAYS_INDIRECT=1
 - ESM vs CJS error in Electron main:
   - `electron/package.json` sets `"type": "commonjs"` for the Electron subtree
 
+- Windows shows old name/icon:
+  - Update `electron-builder.yml` `productName` and icons
+  - Uninstall previous app before installing the new build to clear cached shortcuts
+
 ### Desktop bridge API
 In `preload.ts` (exposed on `window.desktop.window`):
 - `minimize(): void`
@@ -142,7 +164,7 @@ In `preload.ts` (exposed on `window.desktop.window`):
 
 Usage in React (see `src/components/TitleBar.tsx`).
 
-### Publishing (GitHub Releases)
+### CI/CD: GitHub Releases
 - Configure `electron-builder.yml` with your repo:
   ```yaml
   publish:
@@ -151,14 +173,16 @@ Usage in React (see `src/components/TitleBar.tsx`).
     repo: YOUR_REPO_NAME
     releaseType: draft
   ```
-- Local publish (creates a draft release with installers):
+- Local publish (creates a draft release with current OS installer):
   ```bash
   export GH_TOKEN=your_github_personal_access_token
   npm run release
   ```
-- CI auto-publish:
+- CI auto‑publish (builds Windows/macOS/Linux):
   - Push a tag like `v1.0.0` to GitHub. The workflow `.github/workflows/release.yml` builds on Windows/macOS/Linux and publishes assets to the tagged GitHub Release.
-  - Installers appear on the release page for download.
+  - Installers appear on the release page for download. Download via:
+    - Releases: `https://github.com/<owner>/<repo>/releases`
+    - Latest: `https://github.com/<owner>/<repo>/releases/latest`
 
 ### Sharing installers manually
 - Run `npm run dist` on each OS to generate native installers in `dist/`.
