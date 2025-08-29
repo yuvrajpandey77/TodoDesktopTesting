@@ -1,5 +1,4 @@
 name: Build & Publish Desktop App
-
 on:
   push:
     tags:
@@ -8,6 +7,8 @@ on:
 jobs:
   release:
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]

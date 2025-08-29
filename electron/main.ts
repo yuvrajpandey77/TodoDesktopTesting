@@ -51,6 +51,12 @@ function registerGlobalShortcuts() {
 }
 
 async function createWindow() {
+    const getAssetPath = (...paths: string[]) => {
+        if (app.isPackaged) {
+            return path.join(process.resourcesPath, ...paths);
+        }
+        return path.join(process.cwd(), ...paths);
+    };
 	mainWindow = new BrowserWindow({
 		width: 1200,
 		height: 800,
@@ -60,6 +66,7 @@ async function createWindow() {
 		titleBarStyle: 'hidden',
 		autoHideMenuBar: true,
 		fullscreenable: true,
+        icon: getAssetPath('icons', 'icon.png'),
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js'),
 			contextIsolation: true,

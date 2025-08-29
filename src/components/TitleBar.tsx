@@ -52,7 +52,10 @@ export const TitleBar: React.FC = () => {
 			style={dragStyle}
 			onDoubleClick={onTitlebarDoubleClick}
 		>
-			<div className="text-sm opacity-80">Sakura Todo</div>
+			<div className="flex items-center gap-2 text-sm opacity-80">
+				<img src="/icons/icon.png" alt="App Logo" className="w-4 h-4" draggable={false} />
+				<span>Sakura Todo</span>
+			</div>
 			<div className="flex gap-2" style={noDragStyle}>
 				<button onClick={handleMin} className="w-8 h-6 grid place-items-center rounded hover:bg-gray-700" title="Minimize" aria-label="Minimize">—</button>
 				<button onClick={handleFull} className="w-8 h-6 grid place-items-center rounded hover:bg-gray-700" title={isFullScreen ? 'Exit Fullscreen' : 'Fullscreen'} aria-label="Fullscreen">⤢</button>
