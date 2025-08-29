@@ -1,0 +1,20 @@
+appId: com.example.todoapp
+productName: TodoApp
+files:
+  - dist/**
+  - public/**
+  - electron/**
+asar: true
+extraMetadata:
+  main: electron/dist/main.js
+mac:
+  category: public.app-category.productivity
+win:
+  target: nsis
+linux:
+  target: AppImage
+publish:
+  provider: github
+  owner: yuvrajpandey77
+  repo: TodoDesktopTesting
+  releaseType: draft

@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Builds & bundles
+dist/
+electron/dist/
+*.AppImage
+*.exe
+*.dmg
+*.zip
+*.7z
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Env & local config
+.env
+.env.*
+!.env.example
+*.local
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
