@@ -1,5 +1,5 @@
-appId: com.example.todoapp
-productName: TodoApp
+appId: com.example.sakuratodo
+productName: Sakura Todo
 files:
   - dist/**
   - public/**

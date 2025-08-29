@@ -1,5 +1,5 @@
 {
-    "name": "vite-react-typescript-starter",
+    "name": "sakura-todo",
     "private": true,
     "version": "0.1.0",
     "description": "Sakura Todo – Vite React TS app packaged as a desktop app with Electron",
