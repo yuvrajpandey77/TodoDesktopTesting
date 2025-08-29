@@ -108,7 +108,8 @@ async function createWindow() {
 		await mainWindow.loadURL('http://localhost:5173');
 		mainWindow.webContents.openDevTools({ mode: 'detach' });
 	} else {
-		await mainWindow.loadFile(path.join(process.cwd(), 'dist', 'index.html'));
+		const indexPath = path.join(app.getAppPath(), 'dist', 'index.html');
+		await mainWindow.loadFile(indexPath);
 	}
 
 	mainWindow.webContents.setWindowOpenHandler(({ url }) => {
